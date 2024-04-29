@@ -1,28 +1,28 @@
 package com.example.sampleapplication.retrofit
 
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class RetrofitClient {
+    private lateinit var retrofit: Retrofit
 
-    fun getInstance(): Retrofit {
-        var mHttpLoggingInterceptor = HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        var mOkHttpClient = OkHttpClient
-            .Builder()
-            .addInterceptor(mHttpLoggingInterceptor)
-            .build()
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(60,TimeUnit.SECONDS)
+        .readTimeout(60,TimeUnit.SECONDS)
+        .writeTimeout(60,TimeUnit.SECONDS)
+        .build()
 
 
-        var retrofit: Retrofit = retrofit2.Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(mOkHttpClient)
-            .build()
-        return retrofit
+    fun getClient() : Retrofit{
+              retrofit = Retrofit.Builder()
+                  .baseUrl("https://api.openweathermap.org")
+                  .client(client)
+                  .addConverterFactory(GsonConverterFactory.create())
+                  .build()
+    return  retrofit
     }
+
 
 }
